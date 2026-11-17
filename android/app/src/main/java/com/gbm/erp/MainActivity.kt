@@ -539,7 +539,7 @@ private fun ReportsScreen(products: List<ProductEntity>, invoices: List<InvoiceE
 
 @Composable
 private fun SettingsScreen(company: String, currency: String, vat: Double, exchange: Double,
-    save: (String, String, Double, Double) -> Unit, import: () -> Unit) {
+    save: (String, String, Double, Double) -> Unit, onImport: () -> Unit) {
     var name by remember(company) { mutableStateOf(company) }
     var curr by remember(currency) { mutableStateOf(currency) }
     var tax by remember(vat) { mutableStateOf(vat.toString()) }
@@ -556,7 +556,7 @@ private fun SettingsScreen(company: String, currency: String, vat: Double, excha
         Divider(color = Border)
         Text("نقل البيانات", color = Navy, fontSize = 17.sp, fontWeight = FontWeight.Bold)
         Text("استورد ملف source_snapshot.json المستخرج من نسخة GBM ERP الأصلية. سيستبدل الاستيراد البيانات المحلية الحالية.", color = Muted, fontSize = 12.sp)
-        OutlinedButton(onClick = import, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
+        OutlinedButton(onClick = onImport, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
             Icon(Icons.Outlined.FileOpen, null); Spacer(Modifier.width(6.dp)); Text("استيراد نسخة البيانات JSON")
         }
         Text("بيانات الشركة تبقى محلياً على الجهاز ولا تُرفع إلى المستودع.", color = Sage, fontSize = 11.sp)
