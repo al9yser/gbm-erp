@@ -201,6 +201,15 @@ private fun GbmApp(db: AppDatabase) {
                     InvoiceLineEntity(invoiceId = id, productId = it.productId, productName = it.name, productCode = it.code,
                         unit = it.unit, quantity = q, unitPrice = p, purchasePrice = it.cost, total = q * p)
                 })
+                if (type == "sale") {
+                    valid.filter { it.productId != null }.groupBy { it.productId }.forEach { (productId, rows) ->
+                        val product = products.firstOrNull { it.id == productId }
+                        if (product != null) {
+                            val sold = rows.sumOf { it.qty.toDoubleOrNull() ?: 0.0 }
+                            dao.updateProduct(product.copy(stock = product.stock - sold))
+                        }
+                    }
+                }
                 invoiceEditor = false
                 Toast.makeText(context, "تم حفظ المستند " + number, Toast.LENGTH_SHORT).show()
             }
@@ -646,7 +655,7 @@ private fun shareInvoicePdf(context: Context, invoice: InvoiceEntity, lines: Lis
     val canvas: Canvas = page.canvas
     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = android.graphics.Color.rgb(23, 43, 58); textSize = 18f; textAlign = Paint.Align.RIGHT
-        textDirection = Paint.DIRECTION_RTL; typeface = Typeface.create("sans-serif", Typeface.BOLD)
+        typeface = Typeface.create("sans-serif", Typeface.BOLD)
     }
     canvas.drawText("GBM ERP", 550f, 58f, paint)
     paint.textSize = 12f; paint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
